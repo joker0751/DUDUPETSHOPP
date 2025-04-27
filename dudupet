@@ -1,363 +1,673 @@
-<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DUDU PET SHOP - Agendamento de Banho e Tosa</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <style>
+        /* Custom colors and gradients */
         :root {
-            --primary-color: #8B4CFF;
-            --secondary-color: #FF6B6B;
-            --accent-color: #4ECCA3;
-            --text-color: #2D3436;
-            --light-bg: #F7F7F7;
-            --white: #ffffff;
-            --gradient: linear-gradient(45deg, #8B4CFF, #FF6B6B);
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --primary-color: #8b4cff;
+            --secondary-color: #ff6b6b;
+            --accent-color: #4ecca3;
+            --text-color: #e0e6f1;
+            --dark-bg: #0f111a;
+            --dark-bg-alt: #1a1c29;
+            --shadow-glow: 0 0 15px rgba(139, 76, 255, 0.7);
+            --shadow-glow-secondary: 0 0 15px rgba(255, 107, 107, 0.7);
+            --gradient-primary: linear-gradient(135deg, #8b4cff 0%, #ff6b6b 100%);
+            --gradient-accent: linear-gradient(135deg, #4ecca3 0%, #3aafa9 100%);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        /* Scrollbar for time slots */
+        #timeSlots::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
 
+        #timeSlots::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #timeSlots::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        /* Body and base */
         body {
-            background-color: var(--light-bg);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
             color: var(--text-color);
-            line-height: 1.6;
             padding-top: 80px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none;
         }
 
+        /* Header */
         .header {
-            background: var(--gradient);
-            padding: 0.5rem;
             position: fixed;
-            width: 100%;
             top: 0;
+            width: 100%;
+            background: var(--dark-bg-alt);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255 255 255 / 0.1);
             z-index: 1000;
-            box-shadow: var(--shadow);
+            box-shadow: 0 0 20px rgba(139, 76, 255, 0.3);
+            animation: slideDownFade 0.6s ease forwards;
+        }
+
+        @keyframes slideDownFade {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
+            height: 64px;
         }
 
         .logo {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--white);
-            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, #8b4cff, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: default;
+            letter-spacing: 0.05em;
+            user-select: none;
+            text-shadow: 0 0 8px rgba(139, 76, 255, 0.7);
+            transition: transform 0.3s ease;
         }
 
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Social icons container */
         .social-icons {
             display: flex;
-            gap: 10px;
-            margin-left: 15px;
+            gap: 1rem;
+            margin-left: 1rem;
         }
 
         .social-icon {
-            width: 32px;
-            height: 32px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--white);
-            text-decoration: none;
-            font-size: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
             position: relative;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .social-icon:hover {
-            transform: translateY(-5px) rotate(360deg);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 8px rgba(255 255 255 / 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #3b3b3b, #1a1a1a);
+            border: 1px solid rgba(255 255 255 / 0.1);
         }
 
         .social-icon::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
+            left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2));
-            transition: all 0.3s ease;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), transparent);
+            transition: all 0.4s ease;
+            pointer-events: none;
+            transform: skewX(-20deg);
         }
 
         .social-icon:hover::before {
-            transform: translateX(100%);
+            left: 100%;
+        }
+
+        .social-icon:hover {
+            box-shadow: 0 0 15px 3px rgba(139, 76, 255, 0.8);
+            transform: translateY(-4px) rotate(15deg);
+            background: var(--gradient-primary);
+            color: white;
         }
 
         .facebook {
             background: #1877f2;
-            box-shadow: 0 4px 15px rgba(24, 119, 242, 0.2);
+            box-shadow: 0 0 10px #1877f2aa;
         }
 
         .facebook:hover {
-            background: #0d65d9;
-            box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+            box-shadow: 0 0 20px #1877f2ee;
         }
 
         .instagram {
-            background: #e4405f;
-            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-            box-shadow: 0 4px 15px rgba(228, 64, 95, 0.2);
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+            box-shadow: 0 0 10px #d6249faa;
         }
 
         .instagram:hover {
-            box-shadow: 0 8px 25px rgba(228, 64, 95, 0.4);
-            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            box-shadow: 0 0 20px #d6249fee;
         }
 
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 30px 0;
-        }
-
-        .service-card {
-            background: var(--white);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-
-        .service-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .service-image {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .service-content {
-            padding: 20px;
-        }
-
-        .service-price {
-            font-size: 24px;
-            color: var(--primary-color);
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-
-        .btn {
-            padding: 8px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+        /* Cart button */
+        #cartBtn {
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text-color);
             font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
+            font-size: 1rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 0.5rem;
+            cursor: pointer;
+            background: var(--gradient-primary);
+            box-shadow: 0 0 15px rgba(139, 76, 255, 0.7);
+            transition: all 0.3s ease;
+            user-select: none;
         }
 
-        .btn-primary {
-            background: var(--gradient);
-            color: var(--white);
+        #cartBtn:hover {
+            box-shadow: 0 0 25px rgba(255, 107, 107, 0.9);
+            transform: scale(1.05);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(139, 76, 255, 0.3);
+        #cartCount {
+            background: var(--secondary-color);
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0 8px;
+            border-radius: 9999px;
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
+            user-select: none;
         }
 
+        /* Cart container */
         .cart-container {
             position: fixed;
             right: 20px;
             top: 80px;
-            background: var(--white);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            width: 350px;
-            z-index: 999;
+            background: var(--dark-bg-alt);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(139, 76, 255, 0.8);
+            width: 360px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1100;
             display: none;
+            backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid rgba(255 255 255 / 0.1);
+            animation: fadeInScale 0.3s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .cart-container h3 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            user-select: none;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(139, 76, 255, 0.8);
         }
 
         .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255 255 255 / 0.1);
+            font-weight: 500;
+            font-size: 1rem;
+            color: var(--text-color);
+            user-select: text;
+        }
+
+        .cart-item span {
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .cart-item>div {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .remove-item {
-            background: none;
+            background: transparent;
             border: none;
             color: var(--secondary-color);
             cursor: pointer;
-            padding: 5px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+            user-select: none;
+        }
+
+        .remove-item:hover {
+            color: #ff3b3b;
+            transform: scale(1.2);
+        }
+
+        .cart-total {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-top: 1rem;
+            text-align: right;
+            color: var(--accent-color);
+            text-shadow: 0 0 8px rgba(78, 204, 163, 0.8);
+            user-select: none;
+        }
+
+        #checkoutBtn {
+            margin-top: 1.25rem;
+            width: 100%;
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 0;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(139, 76, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        #checkoutBtn:hover {
+            background: var(--gradient-accent);
+            box-shadow: 0 0 30px rgba(78, 204, 163, 0.9);
+            transform: scale(1.05);
+        }
+
+        /* Main content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+            user-select: none;
+        }
+
+        /* Section headings */
+        h2 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(139, 76, 255, 0.8);
+            user-select: none;
+        }
+
+        h3 {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            user-select: none;
+        }
+
+        /* Customer info form */
+        .customer-info {
+            background: var(--dark-bg-alt);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(139, 76, 255, 0.5);
+            margin-bottom: 3rem;
+            user-select: text;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+            user-select: none;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255 255 255 / 0.1);
+            background: rgba(255 255 255 / 0.05);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+            user-select: text;
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input[type="text"]::placeholder,
+        textarea::placeholder {
+            color: rgba(255 255 255 / 0.5);
+            font-style: italic;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 12px var(--primary-color);
+            background: rgba(139, 76, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        /* Services grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            user-select: none;
+        }
+
+        .service-card {
+            background: var(--dark-bg-alt);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(139, 76, 255, 0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 0 40px 5px rgba(139, 76, 255, 0.7);
+        }
+
+        .service-image {
+            height: 220px;
+            background-color: #ffd6d6;
+            position: relative;
+            overflow: hidden;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: drop-shadow(0 0 8px rgba(139, 76, 255, 0.6));
+            transition: transform 0.5s ease;
+        }
+
+        .service-card:hover .service-image img {
+            transform: scale(1.1) rotate(3deg);
+        }
+
+        .service-content {
+            padding: 1.5rem 1.75rem 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: var(--text-color);
+            user-select: text;
+        }
+
+        .service-content h3 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(139, 76, 255, 0.8);
+            user-select: none;
+        }
+
+        .service-content p {
+            white-space: pre-line;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+            user-select: text;
+        }
+
+        .service-price {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            user-select: none;
+            text-shadow: 0 0 10px rgba(78, 204, 163, 0.8);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(139, 76, 255, 0.8);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary:hover {
+            background: var(--gradient-accent);
+            box-shadow: 0 0 30px rgba(78, 204, 163, 0.9);
+            transform: scale(1.05);
+        }
+
+        /* Scheduling section */
+        #scheduling {
+            background: var(--dark-bg-alt);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(139, 76, 255, 0.5);
+            user-select: none;
         }
 
         .calendar-container {
-            background: var(--white);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            box-shadow: var(--shadow);
+            user-select: none;
         }
 
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 15px;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .calendar-header {
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-align: center;
+            color: var(--accent-color);
+            user-select: none;
+            text-shadow: 0 0 6px rgba(78, 204, 163, 0.8);
         }
 
         .calendar-header.sunday {
             color: var(--secondary-color);
-            font-weight: bold;
+            text-shadow: 0 0 6px rgba(255, 107, 107, 0.8);
         }
 
         .calendar-day {
-            aspect-ratio: 1;
+            aspect-ratio: 1 / 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             border-radius: 50%;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--text-color);
+            background: transparent;
             transition: all 0.3s ease;
+            box-shadow: inset 0 0 0 2px rgba(139, 76, 255, 0.3);
+            user-select: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .calendar-day:hover:not(.empty):not(.disabled) {
             background: var(--primary-color);
-            color: var(--white);
+            color: white;
+            box-shadow: 0 0 15px 3px rgba(139, 76, 255, 0.8);
+            transform: scale(1.1);
+            z-index: 10;
         }
 
         .calendar-day.selected {
-            background: var(--gradient);
-            color: var(--white);
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 25px 5px rgba(139, 76, 255, 0.9);
+            transform: scale(1.15);
+            z-index: 20;
         }
 
         .calendar-day.sunday {
-            background-color: #ffeeee;
+            background-color: #33000022;
             color: var(--secondary-color);
             cursor: not-allowed;
+            box-shadow: none;
+            user-select: none;
         }
 
         .calendar-day.disabled {
-            opacity: 0.5;
+            opacity: 0.3;
             cursor: not-allowed;
-            background-color: #f5f5f5;
+            background-color: transparent;
+            box-shadow: none;
+            user-select: none;
         }
 
+        .calendar-day.empty {
+            cursor: default;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        /* Time slots */
         .time-slots {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-            max-height: 300px;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            max-height: 280px;
             overflow-y: auto;
-            padding: 10px;
+            padding-right: 0.5rem;
+            user-select: none;
         }
 
         .time-slot {
-            padding: 8px;
+            padding: 0.5rem 0;
             text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+            background: rgba(255 255 255 / 0.05);
+            border: 2px solid rgba(139, 76, 255, 0.3);
             cursor: pointer;
+            box-shadow: inset 0 0 8px rgba(139, 76, 255, 0.2);
             transition: all 0.3s ease;
-            font-size: 14px;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .time-slot:hover {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
+            box-shadow: 0 0 15px 3px rgba(139, 76, 255, 0.8);
+            transform: scale(1.1);
+            z-index: 10;
         }
 
         .time-slot.selected {
-            background: var(--gradient);
+            background: var(--gradient-primary);
             color: white;
             border-color: transparent;
+            box-shadow: 0 0 25px 5px rgba(139, 76, 255, 0.9);
+            transform: scale(1.15);
+            z-index: 20;
         }
 
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             body {
-                padding-top: 60px;
+                padding-top: 70px;
             }
 
             .nav-container {
-                flex-direction: row;
                 flex-wrap: wrap;
-                justify-content: space-between;
-            }
-
-            .nav-left {
-                flex: 1;
-                margin-bottom: 10px;
+                gap: 0.5rem;
+                height: auto;
+                padding: 0.75rem 1rem;
             }
 
             .social-icons {
                 margin-left: auto;
-                margin-right: 15px;
             }
 
             .cart-container {
                 width: 90%;
                 left: 50%;
                 transform: translateX(-50%);
-                top: 120px;
+                top: 110px;
+                right: auto;
+                max-height: 70vh;
             }
 
             .services-grid {
@@ -366,111 +676,118 @@
 
             .time-slots {
                 grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                max-height: 220px;
             }
 
             .time-slot {
-                padding: 6px;
-                font-size: 13px;
+                font-size: 0.85rem;
+                padding: 0.4rem 0;
             }
         }
 
         @media (max-width: 480px) {
             .nav-container {
-                padding: 10px;
-            }
-
-            .social-icons {
-                margin-right: 10px;
+                padding: 0.5rem 0.75rem;
             }
 
             .social-icon {
-                width: 35px;
-                height: 35px;
+                width: 36px;
+                height: 36px;
                 font-size: 16px;
             }
 
             .main-content {
-                padding: 10px;
+                padding: 1rem 1rem 3rem;
             }
 
             .service-card {
-                margin: 10px 0;
+                margin: 1rem 0;
             }
 
-            .btn {
+            .btn-primary {
                 width: 100%;
-                margin: 5px 0;
+                padding: 0.75rem 0;
             }
 
             .calendar-container {
-                padding: 10px;
+                padding: 1rem;
+            }
+
+            .cart-container {
+                width: 95%;
+                top: 100px;
             }
         }
     </style>
 </head>
 
 <body>
-    <header class="header">
-        <nav class="nav-container">
-            <div class="nav-left">
-                <a href="#" class="logo">DUDU PET SHOP</a>
-                <div class="social-icons">
+    <header class="header" role="banner">
+        <nav class="nav-container" role="navigation" aria-label="Main Navigation">
+            <div class="flex items-center nav-left">
+                <a href="#" class="logo" aria-label="DUDU PET SHOP logo">DUDU PET SHOP</a>
+                <div class="social-icons" role="list">
                     <a href="https://facebook.com/Eduardo Msouza" target="_blank" class="social-icon facebook"
-                        aria-label="Facebook">
-                        <i class="fab fa-facebook-f"></i>
+                        aria-label="Facebook" role="listitem" rel="noopener noreferrer">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
                     </a>
                     <a href="https://instagram.com/dudupetshopp" target="_blank" class="social-icon instagram"
-                        aria-label="Instagram">
-                        <i class="fab fa-instagram"></i>
+                        aria-label="Instagram" role="listitem" rel="noopener noreferrer">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
-            <button class="btn btn-primary" id="cartBtn">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cartCount">0</span> itens
+            <button class="btn-primary" id="cartBtn" aria-haspopup="true" aria-expanded="false"
+                aria-controls="cartContainer" aria-label="Abrir carrinho de compras">
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                <span id="cartCount" aria-live="polite" aria-atomic="true">0</span> itens
             </button>
         </nav>
     </header>
 
-    <div class="cart-container" id="cartContainer">
+    <aside class="cart-container" id="cartContainer" role="region" aria-label="Carrinho de compras" tabindex="-1"
+        aria-hidden="true">
         <h3>Seu Carrinho</h3>
-        <div id="cartItems"></div>
-        <div id="cartTotal" class="cart-total">Total: R$ 0,00</div>
-        <button class="btn btn-primary" id="checkoutBtn">Finalizar Pedido</button>
-    </div>
+        <div id="cartItems" aria-live="polite" aria-atomic="true"></div>
+        <div id="cartTotal" class="cart-total" aria-live="polite" aria-atomic="true">Total: R$ 0,00</div>
+        <button class="btn-primary" id="checkoutBtn" aria-label="Finalizar pedido">Finalizar Pedido</button>
+    </aside>
 
-    <main class="main-content">
-        <section class="customer-info">
-            <h2>Informações do Cliente</h2>
+    <main class="main-content" role="main">
+        <section class="customer-info" aria-labelledby="customer-info-title">
+            <h2 id="customer-info-title">Informações do Cliente</h2>
             <div class="form-group">
                 <label for="ownerName">Nome do Dono</label>
-                <input type="text" id="ownerName" placeholder="Seu nome completo">
+                <input type="text" id="ownerName" placeholder="Seu nome completo" autocomplete="name" />
             </div>
             <div class="form-group">
                 <label for="petName">Nome do Pet</label>
-                <input type="text" id="petName" placeholder="Nome do seu pet">
+                <input type="text" id="petName" placeholder="Nome do seu pet" autocomplete="off" />
+            </div>
+            <div class="form-group">
+                <label for="petNotes">Observação (opcional)</label>
+                <textarea id="petNotes" placeholder="Algum cuidado especial para seu pet?"></textarea>
             </div>
         </section>
 
-        <section id="services">
-            <h2>Nossos Serviços</h2>
-            <div class="services-grid" id="servicesGrid"></div>
+        <section id="services" aria-labelledby="services-title">
+            <h2 id="services-title">Nossos Serviços</h2>
+            <div class="services-grid" id="servicesGrid" role="list"></div>
         </section>
 
-        <section id="scheduling">
-            <h2>Agendamento</h2>
-            <div class="calendar-container">
-                <div id="calendar" class="calendar-grid"></div>
+        <section id="scheduling" aria-labelledby="scheduling-title">
+            <h2 id="scheduling-title">Agendamento</h2>
+            <div class="calendar-container" aria-label="Calendário de agendamento">
+                <div id="calendar" class="calendar-grid" role="grid" aria-readonly="true" aria-multiselectable="false">
+                </div>
                 <h3>Horários Disponíveis</h3>
-                <div id="timeSlots" class="time-slots"></div>
+                <div id="timeSlots" class="time-slots" role="list"></div>
             </div>
         </section>
     </main>
 
     <script>
         const APP = {
-
-
             data: {
                 cart: [],
                 selectedDate: null,
@@ -479,29 +796,12 @@
                     {
                         id: 1,
                         name: 'Pacote Completo Pet',
-                        price: 50.00,
-                        description: `• Banho com shampoo premium e condicionador
-* Tosa na máquina ou tesoura
-* Hidratação completa
-* Corte de unhas
-* Limpeza de ouvidos
-* Laço ou gravata`,
-                        image: '#FFD6D6'
-                    }
+                        price: 50.0,
+                        description: `• Banho com shampoo premium e condicionador\n• Tosa na máquina ou tesoura\n• Hidratação completa\n• Corte de unhas\n• Limpeza de ouvidos\n• Laço ou gravata`,
+                        image: 'https://placehold.co/600x400/FFD6D6/8B4CFF/png?text=Pacote+Completo+Pet'
+                    },
                 ]
             },
-
-
-
-
-
-
-
-
-
-
-
-
 
             elements: {},
 
@@ -525,7 +825,8 @@
                     calendar: document.getElementById('calendar'),
                     timeSlots: document.getElementById('timeSlots'),
                     ownerName: document.getElementById('ownerName'),
-                    petName: document.getElementById('petName')
+                    petName: document.getElementById('petName'),
+                    petNotes: document.getElementById('petNotes')
                 };
             },
 
@@ -536,6 +837,8 @@
                     if (!this.elements.cartContainer.contains(e.target) &&
                         !this.elements.cartBtn.contains(e.target)) {
                         this.elements.cartContainer.style.display = 'none';
+                        this.elements.cartBtn.setAttribute('aria-expanded', 'false');
+                        this.elements.cartContainer.setAttribute('aria-hidden', 'true');
                     }
                 });
             },
@@ -543,35 +846,39 @@
             renderServices() {
                 this.elements.servicesGrid.innerHTML = this.data.services
                     .map(service => `
-                        <div class="service-card">
-                            <div class="service-image" style="background-color: ${service.image}"></div>
+                        <article class="service-card" role="listitem" tabindex="0" aria-label="${service.name}, preço R$ ${service.price.toFixed(2)}">
+                            <div class="service-image">
+                                <img src="${service.image}" alt="Imagem ilustrativa do serviço ${service.name} com cores vibrantes e estilo futurista" loading="lazy" />
+                            </div>
                             <div class="service-content">
                                 <h3>${service.name}</h3>
                                 <p>${service.description}</p>
                                 <div class="service-price">R$ ${service.price.toFixed(2)}</div>
-                                <button class="btn btn-primary" onclick="APP.addToCart(${service.id})">
+                                <button class="btn-primary" aria-label="Adicionar ${service.name} ao carrinho" onclick="APP.addToCart(${service.id})">
                                     Adicionar ao Carrinho
                                 </button>
                             </div>
-                        </div>
+                        </article>
                     `).join('');
             },
 
             renderCalendar() {
                 const today = new Date();
+                today.setHours(0, 0, 0, 0);
                 const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
                 const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
 
                 let calendarHTML = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-                    .map(day => `<div class="calendar-header ${day === 'Dom' ? 'sunday' : ''}">${day}</div>`)
+                    .map(day => `<div class="calendar-header ${day === 'Dom' ? 'sunday' : ''}" role="columnheader">${day}</div>`)
                     .join('');
 
                 for (let i = 0; i < firstDay; i++) {
-                    calendarHTML += '<div class="calendar-day empty"></div>';
+                    calendarHTML += '<div class="calendar-day empty" aria-disabled="true"></div>';
                 }
 
                 for (let day = 1; day <= daysInMonth; day++) {
                     const date = new Date(today.getFullYear(), today.getMonth(), day);
+                    date.setHours(0, 0, 0, 0);
                     const isSunday = date.getDay() === 0;
                     const isPast = date < today;
                     const isDisabled = isPast || isSunday;
@@ -580,7 +887,11 @@
                         <div class="calendar-day 
                             ${isSunday ? 'sunday' : ''} 
                             ${isDisabled ? 'disabled' : ''}"
-                            ${!isDisabled ? `onclick="APP.selectDate(${day})"` : ''}
+                            role="gridcell"
+                            tabindex="${!isDisabled ? '0' : '-1'}"
+                            aria-disabled="${isDisabled}"
+                            aria-selected="false"
+                            ${!isDisabled ? `onclick="APP.selectDate(${day}, event)" onkeydown="APP.handleDateKey(event, ${day})"` : ''}
                         >
                             ${day}
                         </div>
@@ -608,7 +919,7 @@
 
             renderTimeSlots() {
                 if (!this.data.selectedDate) {
-                    this.elements.timeSlots.innerHTML = '<p>Selecione uma data primeiro</p>';
+                    this.elements.timeSlots.innerHTML = '<p class="text-center text-gray-400">Selecione uma data primeiro</p>';
                     return;
                 }
 
@@ -617,38 +928,59 @@
 
                 this.elements.timeSlots.innerHTML = timeSlots
                     .map(time => `
-                        <div class="time-slot" onclick="APP.selectTime('${time}')">
+                        <div class="time-slot" role="listitem" tabindex="0" aria-label="Horário ${time}" onclick="APP.selectTime('${time}', event)" onkeydown="APP.handleTimeKey(event, '${time}')">
                             ${time}
                         </div>
                     `).join('');
             },
 
-            selectDate(day) {
+            selectDate(day, event) {
                 const date = new Date(new Date().getFullYear(), new Date().getMonth(), day);
                 this.data.selectedDate = date;
 
                 document.querySelectorAll('.calendar-day').forEach(el => {
                     el.classList.remove('selected');
+                    el.setAttribute('aria-selected', 'false');
                 });
-                event.target.classList.add('selected');
+                event.currentTarget.classList.add('selected');
+                event.currentTarget.setAttribute('aria-selected', 'true');
 
                 this.renderTimeSlots();
             },
 
-            selectTime(time) {
+            handleDateKey(e, day) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.selectDate(day, e);
+                    e.currentTarget.focus();
+                }
+            },
+
+            selectTime(time, event) {
                 this.data.selectedTime = time;
                 document.querySelectorAll('.time-slot').forEach(el => {
                     el.classList.remove('selected');
                 });
-                event.target.classList.add('selected');
+                event.currentTarget.classList.add('selected');
+            },
+
+            handleTimeKey(e, time) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.selectTime(time, e);
+                    e.currentTarget.focus();
+                }
             },
 
             addToCart(serviceId) {
                 const service = this.data.services.find(s => s.id === serviceId);
                 if (service) {
-                    this.data.cart.push({ ...service, cartId: Date.now() });
+                    this.data.cart.push({ ...service, cartId: Date.now() + Math.random() });
                     this.updateCart();
                     this.elements.cartContainer.style.display = 'block';
+                    this.elements.cartBtn.setAttribute('aria-expanded', 'true');
+                    this.elements.cartContainer.setAttribute('aria-hidden', 'false');
+                    this.elements.cartContainer.focus();
                 }
             },
 
@@ -662,16 +994,16 @@
                 this.elements.cartCount.textContent = this.data.cart.length;
 
                 if (this.data.cart.length === 0) {
-                    this.elements.cartItems.innerHTML = '<p>Carrinho vazio</p>';
+                    this.elements.cartItems.innerHTML = '<p class="text-gray-400 text-center select-text">Carrinho vazio</p>';
                 } else {
                     this.elements.cartItems.innerHTML = this.data.cart
                         .map(item => `
-                            <div class="cart-item">
+                            <div class="cart-item" tabindex="0" aria-label="${item.name}, preço R$ ${item.price.toFixed(2)}">
                                 <span>${item.name}</span>
                                 <div>
                                     <span>R$ ${item.price.toFixed(2)}</span>
-                                    <button class="remove-item" onclick="APP.removeFromCart(${item.cartId})">
-                                        <i class="fas fa-trash"></i>
+                                    <button class="remove-item" aria-label="Remover ${item.name} do carrinho" onclick="APP.removeFromCart(${item.cartId})">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
@@ -682,18 +1014,24 @@
             },
 
             toggleCart() {
-                const isHidden = this.elements.cartContainer.style.display === 'none';
+                const isHidden = this.elements.cartContainer.style.display === 'none' || this.elements.cartContainer.style.display === '';
                 this.elements.cartContainer.style.display = isHidden ? 'block' : 'none';
+                this.elements.cartBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+                this.elements.cartContainer.setAttribute('aria-hidden', !isHidden);
+                if (isHidden) {
+                    this.elements.cartContainer.focus();
+                }
             },
 
             checkout() {
                 const ownerName = this.elements.ownerName.value.trim();
                 const petName = this.elements.petName.value.trim();
+                const petNotes = this.elements.petNotes.value.trim();
 
                 if (!this.validateCheckout(ownerName, petName)) return;
 
-                const formattedDate = this.data.selectedDate.toLocaleDateString();
-                const message = this.createWhatsAppMessage(ownerName, petName, formattedDate);
+                const formattedDate = this.data.selectedDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const message = this.createWhatsAppMessage(ownerName, petName, petNotes, formattedDate);
 
                 window.open(`https://wa.me/5516992320582?text=${encodeURIComponent(message)}`, '_blank');
                 this.resetForm();
@@ -715,7 +1053,7 @@
                 return true;
             },
 
-            createWhatsAppMessage(ownerName, petName, date) {
+            createWhatsAppMessage(ownerName, petName, petNotes, date) {
                 const services = this.data.cart
                     .map(item => `${item.name}: R$ ${item.price.toFixed(2)}`)
                     .join('\n');
@@ -723,13 +1061,20 @@
                     .reduce((sum, item) => sum + item.price, 0)
                     .toFixed(2);
 
-                return `*Novo Agendamento*\n\n` +
+                let message = `*Novo Agendamento*\n\n` +
                     `Cliente: ${ownerName}\n` +
-                    `Pet: ${petName}\n\n` +
-                    `Serviços:\n${services}\n\n` +
+                    `Pet: ${petName}\n`;
+
+                if (petNotes) {
+                    message += `Observação: ${petNotes}\n`;
+                }
+
+                message += `\nServiços:\n${services}\n\n` +
                     `Data: ${date}\n` +
                     `Horário: ${this.data.selectedTime}\n\n` +
                     `Total: R$ ${total}`;
+
+                return message;
             },
 
             resetForm() {
@@ -738,9 +1083,13 @@
                 this.data.selectedTime = null;
                 this.elements.ownerName.value = '';
                 this.elements.petName.value = '';
+                this.elements.petNotes.value = '';
                 this.elements.cartContainer.style.display = 'none';
+                this.elements.cartBtn.setAttribute('aria-expanded', 'false');
+                this.elements.cartContainer.setAttribute('aria-hidden', 'true');
                 this.updateCart();
                 this.renderCalendar();
+                this.elements.timeSlots.innerHTML = '<p class="text-center text-gray-400">Selecione uma data primeiro</p>';
             }
         };
 
